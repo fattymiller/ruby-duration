@@ -27,6 +27,12 @@ describe "Duration" do
     assert_equal    219, d.total_hours
     assert_equal      9, d.total_days
   end
+  
+  it 'should load and dump' do
+    duration = Duration.new(:seconds => 3)
+    assert_equal 'PT3S', Duration.dump(duration)
+    assert_equal Duration.load('PT3S'), duration
+  end
 
   describe "mathematical operations" do
 
@@ -123,6 +129,16 @@ describe "Duration" do
     end
   end
 
+  describe "creation from iso_8601" do
+    it "should work" do
+      assert_equal 60, Duration.new("PT1M").to_i
+      assert_equal 3630, Duration.new("PT1H30S").to_i
+  
+      duration = Duration.new(:weeks => 1, :days => 1, :hours => 2, :minutes => 1, :seconds => 2)
+      assert_equal duration, Duration.new(duration.iso8601)
+    end
+  end
+  
   describe "#iso_6801" do
     it "should format seconds" do
       d = Duration.new(:seconds => 1)
